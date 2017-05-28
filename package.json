@@ -1,11 +1,11 @@
 {
-  "name": "uno-logic-backend",
+  "name": "Uno game rules",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "mocha game.spec.js"
   },
-  "author": "Ricardo Ibarra2 (http://doitfy.com)",
+  "author": "Ricardo Ibarra (http://doitfy.com)",
   "license": "ISC"
 }
