@@ -120,19 +120,64 @@ class DeckSet {
 
 }
 
+class Player {
+  constructor(cards) {
+    this._cards = cards;
+  }
+
+  getCards() {
+    return this._cards.slice();
+  }
+
+  drawCard(value) {
+    let index = -1;
+    for(let c = 0; c<this._cards.length; c++) {
+      if(this._cards[c].card === value) {
+        index = c;
+        break;
+      }
+    }
+    if(index !== -1) {
+      return this._cards.splice(index, 1)[0];
+    }
+    //maybe we should throw when we try to play a card we dont have
+    return null;
+  }
+}
+
 class Game extends DeckSet {
     constructor() {
         super();
+        this._players = [];
+    }
+
+    getPlayers() {
+      return this._players.slice();
+    }
+
+    getCardDeck() {
+      return JSON.parse(JSON.stringify(this._cardDeck));
+    }
+
+    putCardInDeck(cardValue) {
+      //this method may need to be called only after we have played the card correctly
+      //but it is a different method so we can implement this.
     }
 
     prepareGame(numberOfPlayers = 2) {
-        //validate game
         if(numberOfPlayers > 10 || numberOfPlayers < 0) {
           throw 'Invalid number of players, number must be between 0 and 10';
         }
-        let game = this.getInitialSets(numberOfPlayers);
 
-        return game;
+        let game = this.getInitialSets(numberOfPlayers);
+        this._game = game;
+
+        game.gameCards.forEach(cardSet=> {
+          let player = new Player(cardSet);
+          this._players.push(player);
+        });
+
+        this._cardDeck = game.cardDeck;
     }
 }
 
