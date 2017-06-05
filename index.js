@@ -118,6 +118,72 @@ class DeckSet {
 
     }
 
+    isCardValid(cardValue) {
+      //cardValue = (cardValue||'').toString().trim();
+      if(typeof cardValue !== 'string' || cardValue.trim().length < 2) {
+        throw 'Invalid Card Value';
+      }
+
+      let cardValues = cardValue.split('-');
+      if (cardValues.length <= 0) {
+        throw 'Invalid Card Value';
+      }
+      //we first check if its a valid card.
+      let _cardDeck = this.getInitialDeck();
+      if ((_cardDeck[cardValues[0]]||[]).find(card=>card === cardValues[1])) {
+        return {
+           ok:true,
+           card:{
+             group:cardValues[0],
+             value:cardValues[1]
+           }
+        };
+      }
+      return {
+        ok:false,
+        cardValues:null
+      };
+    }
+
+    getCardMaxQuantity(cardValue) {
+      let {ok, card} = this.isCardValid(cardValue);
+      if(ok) {
+        let _cardDeck = this.getInitialDeck();
+        let maxTotal = _cardDeck[card.group].filter(_card=>_card===card.value).length;
+        return maxTotal;
+      }
+      return null;
+    }
+
+    cardIsReturnable(cardValue, players, currentCardDeck) {
+      let {ok, card} = this.isCardValid(cardValue);
+      if(ok) {
+        //get total cards of this type from original card deck.
+        let maxTotal = this.getCardMaxQuantity(cardValue);
+
+        //is card in players hand and how many times
+        let totalInPlayers = 0;
+        for(let p=0,totalPlayers=players.length; p<totalPlayers; p++) {
+           for(let c=0, totalCards=players[p]._cards.length;c < totalCards;c++) {
+             if(cardValue === players[p]._cards[c].card) {
+               totalInPlayers += 1;
+             }
+           }
+        }
+
+        //Is card in deck and how many times.
+        let totalInDeck = currentCardDeck[card.group].filter(_card=>_card === card.value).length;
+
+        if(totalInDeck + totalInPlayers < maxTotal) {
+          return true;
+        }
+
+        return false;
+
+      } else {
+        throw  'Invalid Card Value';
+      }
+    }
 }
 
 class Player {
@@ -160,8 +226,10 @@ class Game extends DeckSet {
     }
 
     putCardInDeck(cardValue) {
-      //this method may need to be called only after we have played the card correctly
-      //but it is a different method so we can implement this.
+      //put card in deck and make sure the card is not duplicated or invalid
+      if(this.isCardValid(cardValue).ok) {
+
+      }
     }
 
     prepareGame(numberOfPlayers = 2) {

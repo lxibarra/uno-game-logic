@@ -75,16 +75,46 @@ describe('Test Uno Game Rules', function() {
     });
   });
 
+  describe('Check card values', function() {
+
+    it('invalid card values throw', function() {
+        expect(game.isCardValid.bind(game, undefined)).to.throw();
+        expect(game.isCardValid.bind(game, ' ')).to.throw();
+        expect(game.isCardValid.bind(game, 1)).to.throw();
+        expect(game.isCardValid.bind(game, null)).to.throw();
+        expect(game.isCardValid.bind(game, true)).to.throw();
+        expect(game.isCardValid.bind(game, [])).to.throw();
+        expect(game.isCardValid.bind(game, {})).to.throw();
+    });
+
+    it('Only defined cards are accepted', function() {
+      expect(game.isCardValid('red-9').ok).to.equal(true);
+      expect(game.isCardValid('blue-9').ok).to.equal(true);
+      expect(game.isCardValid('wildPlus4-*+4').ok).to.equal(true);
+      expect(game.isCardValid('wild-*').ok).to.equal(true);
+    });
+
+    it('Invalid cards are not accepted', function() {
+      expect(game.isCardValid('some rubish').ok).to.equal(false);
+      expect(game.isCardValid('432432423').ok).to.equal(false);
+      expect(game.isCardValid('RED-9').ok).to.equal(false);
+    });
+
+  });
+
   describe('Player plays cards', function() {
-    it('Play a card, user has 1 less card and the deck increases correctly', function(){
+    it('Play a card, user has 1 less card', function() {
       game.prepareGame(4);
       let [player1] = game.getPlayers();
       let [card1] = player1.getCards();
-      console.log(card1);
       player1.drawCard(card1.card);
       expect(player1.getCards().length).to.equal(6);
-      //should create a method to put the card back in the deck.
+
+      //when i play a card it must be returned to the deck
+      //we need a way to select the card on top of the table at game setup
+      //then user should only be able to play a valid card.
     });
+
   });
 
 });
