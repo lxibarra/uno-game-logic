@@ -110,9 +110,15 @@ describe('Test Uno Game Rules', function() {
       player1.drawCard(card1.card);
       expect(player1.getCards().length).to.equal(6);
 
+
+      //MOST  important
+      // set method of play card in the game class and update the player cards accordingly
+      // so he can pick a new card and play.
+
       //when i play a card it must be returned to the deck
       //we need a way to select the card on top of the table at game setup
       //then user should only be able to play a valid card.
+      //the game class should handle the card deal with a player id player id
     });
 
   });
